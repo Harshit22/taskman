@@ -1,0 +1,35 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'taskman/style.css' %}" />
+
+<div class = "holder">
+	<div class = "login_form" align="right">
+		<h2 style="margin: 0px 150px 0px 0px"> Login </h2>
+		<form action="{% url 'taskman:login'%}" method="post">
+			{% csrf_token %}
+			<table>
+			{{ loginform.as_table}}
+			<th/> 
+			<td> 
+				<input type="submit" value="login" name="login" style="font-size: 20px;"/>
+				<font color="red"> {{ login_error }} </font>
+			</td>
+			</table>
+			
+			
+		</form>
+	</div>
+	<div class = "signup_form">
+		<h2 style="margin: 0px 0px 0px 150px"> Sign Up </h2>
+		<form action="{% url 'taskman:login'%}" method="post">
+			{% csrf_token %}
+			<table>
+			{{ signupform.as_table}}
+			<th/> 
+			<td>
+				<input type="submit" value="Sign up" name="signup" style="font-size: 20px;"/>
+				<font color="red"> {{ sign_up_error }} </font>
+			</td>
+			</table>
+		</form>
+	</div>
+</div>

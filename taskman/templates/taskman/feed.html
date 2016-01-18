@@ -1,0 +1,16 @@
+{% include "taskman/header.html" %}
+
+{% if feed|length_is:"0" %}
+	<h3> You don't have any activity.</h3>
+{% else %}
+
+	<table class="feed_table">
+	{% for f in feed %}
+		<tr>
+		<td width = "700px">{{ f|safe }}</td>
+		<td width = "400px" align = "right">{{ f.date|date:"d M, Y h:i a" }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+
+{% endif %}	
