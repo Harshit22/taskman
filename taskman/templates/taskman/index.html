@@ -20,7 +20,7 @@
 					  <th width="230px"><a href="?order_by=title&type=open">Title</a></th>
 					  <th width="400px">Comments</th>
 					  <th width="150px"><a href="?order_by=deadline&type=open">Deadline</a></th>
-					  <th width="250px"><a href="?order_by=added_date&type=open">Added on</a></th>	  
+					  <th width="250px"><a href="?order_by=-added_date&type=open">Added on</a></th>	  
 					</tr>
 		
 					{% for task in open_tasks %}
@@ -52,8 +52,8 @@
 					  <th width="70px">Select</th>
 					  <th width="230px"><a href="?order_by=title&type=closed">Title</a></th>
 					  <th width="400px">Comments</th>
-					  <th width="150px"><a href="?order_by=deadline&type=closed">Deadline</a></th>
-					  <th width="250px"><a href="?order_by=added_date&type=closed">Added on</a></th>  
+					  <th width="150px"><a href="?order_by=-deadline&type=closed">Deadline</a></th>
+					  <th width="250px"><a href="?order_by=-added_date&type=closed">Added on</a></th>  
 					</tr>
 					
 					{% for task in closed_tasks %}

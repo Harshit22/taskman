@@ -14,9 +14,6 @@ from .forms import LoginForm, SignUpForm, AddTaskFrom
 
 # Create your views here.
 
-a = (lambda l: "s<b>" if l > 1 else "<b>")
-b = (lambda i: "'," if i > 1 else "")
-
 def login(request):
     if request.method == 'POST':
         if request.POST.get('login', False):
@@ -56,79 +53,27 @@ def login(request):
 @login_required(redirect_field_name = None, login_url='/taskman/login/')
 def index(request):
     user = request.user
+    open_order_by = 'deadline'
+    closed_order_by = 'title'
     
-    if request.method == 'POST':
+    if request.method == 'GET':
+        type = request.GET.get('type', None)
+        if type == 'open':
+            open_order_by = request.GET.get('order_by', None)
+        elif type == 'closed':
+            closed_order_by = request.GET.get('order_by', None)
         
-        if request.POST['task_edits']:
-            
-            value = request.POST['task_edits']
-            if value == "Mark open":
-                task_keys = request.POST.getlist('pk')
-                message = "You reopened task" + a(len(task_keys))
-                for index, pkey in enumerate(task_keys,start = 1):
-                    task = get_object_or_404(Task, pk = pkey)
-                    task.completed = False
-                    task.save()
-                    message += " " + b(index) + "'" + task.title
-
-                message += "'</b>."
-                feed = Feed(user = user, message = message, date = timezone.now())
-                feed.save()                
-
-            if value == "Mark closed":
-                task_keys = request.POST.getlist('pk')
-                message = "You closed task" + a(len(task_keys))
-                for index, pkey in enumerate(task_keys,start = 1):
-                    task = get_object_or_404(Task, pk = pkey)
-                    task.completed = True
-                    task.save()
-                    message += " " + b(index) + "'" + task.title
-
-                message += "'</b>."
-                feed = Feed(user = user, message = message, date = timezone.now())
-                feed.save()
-                
-            if value == "Delete":
-                task_keys = request.POST.getlist('pk')
-                message = "You deleted task" + a(len(task_keys))
-                for index, pkey in enumerate(task_keys,start = 1):
-                    task = get_object_or_404(Task, pk = pkey)
-                    task.delete()
-                    message += " " + b(index) + "'" + task.title
-
-                message += "'</b>."
-                feed = Feed(user = user, message = message, date = timezone.now())
-                feed.save()
-
-            open_tasks = user.task_set.filter(completed = False)
-            closed_tasks = user.task_set.filter(completed = True)            
+    open_tasks = Task.objects.get_open_tasks(user, open_order_by)
+    closed_tasks = Task.objects.get_closed_tasks(user, closed_order_by)
+    
+    if request.method == 'POST':       
+        if 'task_edits' in request.POST:            
+            option = request.POST['task_edits']
+            task_keys = request.POST.getlist('pk')
+            Task.objects.edit_all(option = option, user = user, task_keys = task_keys)          
                 
         return HttpResponseRedirect(reverse('taskman:index'))
-
-    open_tasks = user.task_set.filter(completed = False).order_by('deadline')
-    closed_tasks = user.task_set.filter(completed = True).order_by(Lower('title'))
-
-    if request.method == 'GET':
-        t = request.GET.get('type', None)
-        s = request.GET.get('order_by', None)
-        if t == 'open' and s:
-            if s == 'title':
-                open_tasks = user.task_set.filter(completed = False).order_by(Lower(s)) #asc
-            elif s == 'deadline':
-                open_tasks = user.task_set.filter(completed = False).order_by(s)  #asc; approaching deadlines at top
-            elif s == 'added_date':
-                open_tasks = user.task_set.filter(completed = False).order_by('-' + s)  #desc; recently added at top
                 
-            
-        if t == 'closed' and s:
-            if s == 'title':
-                closed_tasks = user.task_set.filter(completed = True).order_by(Lower(s)) #asc
-            elif s == 'deadline':
-                closed_tasks = user.task_set.filter(completed = True).order_by('-' + s)  #desc; recently closed at top
-            elif s == 'added_date':
-                closed_tasks = user.task_set.filter(completed = True).order_by('-' + s)  #desc; recently added at top
-            
-            
     return render(request, 'taskman/index.html', {'user' : user, 'open_tasks' : open_tasks, 'closed_tasks' :closed_tasks})
 
     
@@ -147,21 +92,8 @@ def add(request):
     user = request.user
     
     if request.method == 'POST':
-        print(request.POST['deadline']) #RF
         try:
-            if request.POST['title'] == '':
-                raise ValueError
-            task = Task(user = user,
-                        title = request.POST['title'],
-                        comments = request.POST['comments'],
-                        added_date = timezone.now(),
-                        deadline = datetime.strptime(request.POST['deadline'], '%d %b %Y').strftime('%Y-%m-%d'))
-            task.save()
-
-            message = "You created a task <b>'" + task.title + "'</b>, to be completed by " + task.deadline + "."
-            feed = Feed(user = user, message = message, date = timezone.now())
-            feed.save()
-
+            Task.objects.add_task(user, request.POST)
             return HttpResponseRedirect(reverse('taskman:index'))
             
         except ValueError:
