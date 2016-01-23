@@ -19,10 +19,10 @@ Command example: $ pip install Django
 
 2. Launch the app taskman by below command
       
-      /proj_directory $ python manage.py runserver PORT-NUMBER
+      /proj_directory $ python manage.py runserver (PORT_NUMBER)
 
 
-3. Open any broswer. Launch 'localhost:PORT-NUMBER/taskman'.
+3. Open any broswer. Launch 'localhost:(PORT_NUMBER)/taskman'.
 
 ## Note:
 1. You don't need to do any migrations before starting the app.
