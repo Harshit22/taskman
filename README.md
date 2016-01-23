@@ -9,7 +9,7 @@
 
 You can install them using pip.
 
-Command example: pip install Django
+Command example: $ pip install Django
 
 
 ## How to launch the app:
