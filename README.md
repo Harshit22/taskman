@@ -3,7 +3,8 @@
 
 
 ## Dependencies:
-1. django (app tested on version 1.9)
+0. Python (app tested on version 3.4.4)
+1. Django (app tested on version 1.9)
 2. dj-database-url (app tested on version 0.3.0)
 
 You can install them using pip.
@@ -23,4 +24,7 @@ Command example: $ pip install Django
 
 3. Open any broswer. Launch 'localhost/taskman'.
 
-Note:- You don't need to do any migrations before starting the app.
+## Note:
+1. You don't need to do any migrations before starting the app.
+
+2. This app has been tested on Windows 8.1 and Ubuntu 14.04
