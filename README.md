@@ -15,7 +15,7 @@ Command example: $ pip install Django
 ## How to launch the app:
 1. After pulling the codebase, open terminal/command prompt. Open the directory containing 'manage.py' file.
 
-      $ cd "... path to directory containing manage.p ..."
+      $ cd "... path to directory containing manage.py ..."
 
 
 2. Launch the app taskman by below command
